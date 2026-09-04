@@ -73,7 +73,9 @@ button { font: inherit; }
 .empty-config { grid-column: 1 / -1; min-height: 220px; display: grid; place-items: center; color: #8e9a93; font-size: 12px; }
 .tooltip-card { min-width: 210px; max-width: 320px; background: #172c22 !important; color: #edf4ef !important; padding: 12px 13px !important; border-radius: 5px !important; box-shadow: 0 12px 30px rgba(10,30,20,.22); }
 .tooltip-title { margin: 0 0 9px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.14); font-size: 11px; }
-.tooltip-title-list { max-height: 180px; margin: 0; padding: 0 0 0 16px; overflow-y: auto; color: #edf4ef; font-size: 10px; line-height: 1.55; }
+.tooltip-title-list { max-height: 180px; margin: 0; padding: 0 0 0 18px; overflow-y: auto; color: #edf4ef; font-size: 10px; line-height: 1.55; list-style: disc outside; }
+.tooltip-title-list li { display: list-item; padding-left: 2px; }
+.tooltip-title-list li::marker { color: #cfad72; font-size: .9em; }
 .tooltip-title-list li + li { margin-top: 4px; }
 .tooltip-empty-title { margin: 0; color: #aebeb5; font-size: 10px; }
 .timeline-card { max-width: 1560px; min-height: 108px; margin: 14px auto 0; padding: 18px 24px; background: var(--green-dark); color: white; display: grid; grid-template-columns: 230px 1fr 110px; gap: 30px; align-items: center; box-shadow: 0 12px 30px rgba(22,62,48,.14); }
