@@ -71,9 +71,11 @@ button { font: inherit; }
 .class-axis span { width: 27px; text-align: center; color: #8b9891; font-size: 8px; line-height: 1; }
 .axis-title { align-self: stretch; display: grid; place-items: center; border-left: 1px solid #d3ded7; border-right: 1px solid #d3ded7; color: #9aa59f; font-size: 8px; padding-top: 5px; }
 .empty-config { grid-column: 1 / -1; min-height: 220px; display: grid; place-items: center; color: #8e9a93; font-size: 12px; }
-.tooltip-card { min-width: 210px; background: #172c22 !important; color: #edf4ef !important; padding: 12px 13px !important; border-radius: 5px !important; box-shadow: 0 12px 30px rgba(10,30,20,.22); }
+.tooltip-card { min-width: 210px; max-width: 320px; background: #172c22 !important; color: #edf4ef !important; padding: 12px 13px !important; border-radius: 5px !important; box-shadow: 0 12px 30px rgba(10,30,20,.22); }
 .tooltip-title { margin: 0 0 9px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.14); font-size: 11px; }
-.tooltip-row { display: flex; justify-content: space-between; gap: 22px; margin-top: 5px; font-size: 10px; color: #aebeb5; }.tooltip-row strong { color: white; }
+.tooltip-title-list { max-height: 180px; margin: 0; padding: 0 0 0 16px; overflow-y: auto; color: #edf4ef; font-size: 10px; line-height: 1.55; }
+.tooltip-title-list li + li { margin-top: 4px; }
+.tooltip-empty-title { margin: 0; color: #aebeb5; font-size: 10px; }
 .timeline-card { max-width: 1560px; min-height: 108px; margin: 14px auto 0; padding: 18px 24px; background: var(--green-dark); color: white; display: grid; grid-template-columns: 230px 1fr 110px; gap: 30px; align-items: center; box-shadow: 0 12px 30px rgba(22,62,48,.14); }
 .timeline-copy p { margin: 0 0 2px; font-size: 8px; letter-spacing: .2em; color: #8faf9f; font-weight: 700; }.timeline-copy h2 { font-family: Georgia, "Songti SC", serif; font-size: 18px; margin: 0 0 3px; font-weight: 500; }.timeline-copy span { font-size: 9px; color: #a9beb4; }
 .timeline-control { position: relative; padding: 6px 12px 0; }.quarter-slider { position: absolute !important; top: 9px; left: 12px; right: 12px; width: calc(100% - 24px) !important; z-index: 2; }

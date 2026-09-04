@@ -22,9 +22,15 @@ type ApiCohortConfig = {
   year: number | string;
   campus_class_counts?: Partial<Record<Campus, number>>;
 };
+type HeatmapCellValue =
+  | number
+  | {
+      count: number;
+      titles?: string[];
+    };
 type Snapshots = Record<
   string,
-  Record<string, Partial<Record<Campus, Record<string, number>>>>
+  Record<string, Partial<Record<Campus, Record<string, HeatmapCellValue>>>>
 >;
 type HeatmapResponse = {
   quarters: string[];
@@ -75,11 +81,13 @@ function HeatCell({
   campus,
   classNumber,
   count,
+  titles,
 }: {
   year: number;
   campus: Campus;
   classNumber: number;
   count: number;
+  titles: string[];
 }) {
   const level = levelFor(count);
 
@@ -97,14 +105,15 @@ function HeatCell({
         <p className="tooltip-title">
           {campus}校区 · {year}届 · {classNumber}班
         </p>
-        <div className="tooltip-row">
-          <span>重要联络人</span>
-          <strong>{count} 人</strong>
-        </div>
-        <div className="tooltip-row">
-          <span>覆盖等级</span>
-          <strong>{level.label}</strong>
-        </div>
+        {titles.length ? (
+          <ul className="tooltip-title-list">
+            {titles.map((title, index) => (
+              <li key={`${title}-${index}`}>{title}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="tooltip-empty-title">暂无当前title信息</p>
+        )}
       </TooltipContent>
     </Tooltip>
   );
@@ -177,14 +186,31 @@ export default function Home() {
   );
   const selectedQuarter = quarters[quarterIndex] ?? "—";
 
-  const contactCount = (
+  const cellData = (
     year: number,
     campus: Campus,
     classNumber: number,
-  ) =>
-    snapshots[selectedQuarter]?.[String(year)]?.[campus]?.[
+  ): { count: number; titles: string[] } => {
+    const value = snapshots[selectedQuarter]?.[String(year)]?.[campus]?.[
       String(classNumber)
-    ] ?? 0;
+    ];
+
+    // Keep compatibility with the previous count-only FC response while the
+    // backend is being updated.
+    if (typeof value === "number") {
+      return { count: value, titles: [] };
+    }
+
+    return {
+      count: normalizeClassCount(value?.count),
+      titles: Array.isArray(value?.titles)
+        ? value.titles.filter(
+            (title): title is string =>
+              typeof title === "string" && title.trim().length > 0,
+          )
+        : [],
+    };
+  };
 
   const stats = useMemo(() => {
     let contacts = 0;
@@ -197,7 +223,7 @@ export default function Home() {
         ["林荫", row.linyin],
       ] as [Campus, number][]) {
         for (let classNumber = 1; classNumber <= count; classNumber += 1) {
-          const value = contactCount(row.year, campus, classNumber);
+          const value = cellData(row.year, campus, classNumber).count;
           contacts += value;
           total += 1;
           if (value > 0) covered += 1;
@@ -333,7 +359,7 @@ export default function Home() {
                             year={row.year}
                             campus="高新"
                             classNumber={classNumber}
-                            count={contactCount(row.year, "高新", classNumber)}
+                            {...cellData(row.year, "高新", classNumber)}
                           />
                         ) : (
                           <span className="cell-spacer" key={classNumber} />
@@ -352,7 +378,7 @@ export default function Home() {
                             year={row.year}
                             campus="林荫"
                             classNumber={classNumber}
-                            count={contactCount(row.year, "林荫", classNumber)}
+                            {...cellData(row.year, "林荫", classNumber)}
                           />
                         ) : (
                           <span className="cell-spacer" key={classNumber} />
