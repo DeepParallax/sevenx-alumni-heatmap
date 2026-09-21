@@ -47,6 +47,13 @@ type HeatmapResponse = {
   snapshots: Snapshots;
   generated_at: string;
   valid_person_count: number;
+  api_version?: string;
+  profile_diagnostics?: {
+    title_field_matches?: string[];
+    education_field_matches?: string[];
+    non_empty_title_count?: number;
+    non_empty_education_count?: number;
+  };
 };
 
 const LEVELS = [
@@ -174,6 +181,10 @@ export default function Home() {
   const [quarterIndex, setQuarterIndex] = useState(0);
   const [cohorts, setCohorts] = useState<CohortRow[]>([]);
   const [snapshots, setSnapshots] = useState<Snapshots>({});
+  const [apiVersion, setApiVersion] = useState<string>("未返回");
+  const [profileDiagnostics, setProfileDiagnostics] = useState<
+    HeatmapResponse["profile_diagnostics"]
+  >();
   const [dataState, setDataState] = useState<"loading" | "live" | "error">(
     "loading",
   );
@@ -202,6 +213,8 @@ export default function Home() {
         setQuarters(data.quarters);
         setCohorts(normalizeCohortConfig(data.cohort_config));
         setSnapshots(data.snapshots);
+        setApiVersion(data.api_version ?? "未返回");
+        setProfileDiagnostics(data.profile_diagnostics);
 
         const defaultIndex = data.default_quarter
           ? data.quarters.indexOf(data.default_quarter)
@@ -235,6 +248,8 @@ export default function Home() {
     (_, index) => index + 1,
   );
   const selectedQuarter = quarters[quarterIndex] ?? "—";
+  const showDiagnostics =
+    new URLSearchParams(window.location.search).get("debug") === "1";
 
   const cellData = (
     year: number,
@@ -337,6 +352,24 @@ export default function Home() {
             </div>
           </div>
         </header>
+
+        {showDiagnostics ? (
+          <section className="diagnostics-card" aria-label="数据字段诊断">
+            <strong>FC 字段诊断</strong>
+            <span>API：{apiVersion}</span>
+            <span>
+              Title 字段：
+              {profileDiagnostics?.title_field_matches?.join("、") || "未匹配"}
+              （非空 {profileDiagnostics?.non_empty_title_count ?? 0}）
+            </span>
+            <span>
+              教育字段：
+              {profileDiagnostics?.education_field_matches?.join("、") ||
+                "未匹配"}
+              （非空 {profileDiagnostics?.non_empty_education_count ?? 0}）
+            </span>
+          </section>
+        ) : null}
 
         <section className="summary-row" aria-label="当前季度概览">
           <div className="quarter-heading">

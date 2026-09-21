@@ -28,6 +28,8 @@ button { font: inherit; }
 .data-status-loading .status-dot { background: #cfad72; box-shadow: 0 0 0 4px rgba(207,173,114,.14); }
 .data-status-error { color: #a45b54; }
 .data-status-error .status-dot { background: #c8685e; box-shadow: 0 0 0 4px rgba(200,104,94,.14); }
+.diagnostics-card { max-width: 1560px; margin: 10px auto 0; padding: 10px 14px; border: 1px solid #d8c48f; background: #fff9e9; color: #4d4634; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; line-height: 1.5; }
+.diagnostics-card strong { color: #2e3d35; }
 .divider { width: 1px; height: 15px; background: var(--line); margin: 0 5px; }
 .summary-row { max-width: 1560px; margin: 0 auto; min-height: 82px; display: grid; grid-template-columns: 220px 180px 180px 180px 1fr; align-items: center; gap: 18px; }
 .quarter-heading { align-self: stretch; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--line); }
