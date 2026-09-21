@@ -25,11 +25,16 @@ type ApiCohortConfig = {
   year: number | string;
   campus_class_counts?: Partial<Record<Campus, number>>;
 };
+type HeatmapProfile = {
+  title: string;
+  education: string;
+};
 type HeatmapCellValue =
   | number
   | {
       count: number;
       titles?: string[];
+      profiles?: Array<Partial<HeatmapProfile>>;
     };
 type Snapshots = Record<
   string,
@@ -108,14 +113,14 @@ function HeatCell({
   classNumber,
   unknownClass = false,
   count,
-  titles,
+  profiles,
 }: {
   year: number;
   campus: Campus;
   classNumber?: number;
   unknownClass?: boolean;
   count: number;
-  titles: string[];
+  profiles: HeatmapProfile[];
 }) {
   const level = levelFor(count);
   const classLabel = unknownClass ? "unspecified" : `${classNumber}班`;
@@ -134,14 +139,30 @@ function HeatCell({
         <p className="tooltip-title">
           {campus}校区 · {year}届 · {classLabel}
         </p>
-        {titles.length ? (
+        {profiles.length ? (
           <ul className="tooltip-title-list">
-            {titles.map((title, index) => (
-              <li key={`${title}-${index}`}>{title}</li>
+            {profiles.map((profile, index) => (
+              <li key={`${profile.title}-${profile.education}-${index}`}>
+                {profile.title ? (
+                  <strong className="tooltip-profile-title">
+                    {profile.title}
+                  </strong>
+                ) : null}
+                {profile.education ? (
+                  <span className="tooltip-profile-education">
+                    {profile.education}
+                  </span>
+                ) : null}
+                {!profile.title && !profile.education ? (
+                  <span className="tooltip-profile-empty">
+                    未填写人物简介
+                  </span>
+                ) : null}
+              </li>
             ))}
           </ul>
         ) : (
-          <p className="tooltip-empty-title">暂无当前title信息</p>
+          <p className="tooltip-empty-title">暂无人物简介</p>
         )}
       </TooltipContent>
     </Tooltip>
@@ -219,7 +240,7 @@ export default function Home() {
     year: number,
     campus: Campus,
     classKey: number | typeof UNKNOWN_CLASS_KEY,
-  ): { count: number; titles: string[] } => {
+  ): { count: number; profiles: HeatmapProfile[] } => {
     const value = snapshots[selectedQuarter]?.[String(year)]?.[campus]?.[
       String(classKey)
     ];
@@ -227,17 +248,32 @@ export default function Home() {
     // Keep compatibility with the previous count-only FC response while the
     // backend is being updated.
     if (typeof value === "number") {
-      return { count: value, titles: [] };
+      return { count: value, profiles: [] };
     }
+
+    const profiles = Array.isArray(value?.profiles)
+      ? value.profiles
+          .map((profile) => ({
+            title:
+              typeof profile?.title === "string" ? profile.title.trim() : "",
+            education:
+              typeof profile?.education === "string"
+                ? profile.education.trim()
+                : "",
+          }))
+          .filter((profile) => profile.title || profile.education)
+      : Array.isArray(value?.titles)
+        ? value.titles
+            .filter(
+              (title): title is string =>
+                typeof title === "string" && title.trim().length > 0,
+            )
+            .map((title) => ({ title: title.trim(), education: "" }))
+        : [];
 
     return {
       count: normalizeClassCount(value?.count),
-      titles: Array.isArray(value?.titles)
-        ? value.titles.filter(
-            (title): title is string =>
-              typeof title === "string" && title.trim().length > 0,
-          )
-        : [],
+      profiles,
     };
   };
 
