@@ -10,6 +10,9 @@ import {
 
 const HEATMAP_API =
   "https://sevenx-tmap-api-rarmirbpcd.cn-hangzhou.fcapp.run/api/heatmap";
+const MIN_COHORT_YEAR = 1995;
+const DEFAULT_EARLY_LINYIN_CLASS_COUNT = 16;
+const UNKNOWN_CLASS_KEY = "unknown";
 
 type Campus = "高新" | "林荫";
 type CohortRow = {
@@ -62,7 +65,7 @@ function normalizeClassCount(value: unknown) {
 }
 
 function normalizeCohortConfig(config: ApiCohortConfig[]): CohortRow[] {
-  return config
+  const configuredRows = config
     .map((item) => {
       const year = Number(item.year);
       return {
@@ -74,36 +77,62 @@ function normalizeCohortConfig(config: ApiCohortConfig[]): CohortRow[] {
     })
     .filter((item) => Number.isInteger(item.year) && item.year > 1900)
     .sort((a, b) => a.year - b.year);
+
+  const configuredByYear = new Map(
+    configuredRows.map((row) => [row.year, row]),
+  );
+  const latestYear = Math.max(
+    MIN_COHORT_YEAR,
+    ...configuredRows.map((row) => row.year),
+  );
+
+  return Array.from(
+    { length: latestYear - MIN_COHORT_YEAR + 1 },
+    (_, index) => {
+      const year = MIN_COHORT_YEAR + index;
+      return (
+        configuredByYear.get(year) ?? {
+          id: `cohort-${year}`,
+          year,
+          gaoxin: 0,
+          linyin: DEFAULT_EARLY_LINYIN_CLASS_COUNT,
+        }
+      );
+    },
+  );
 }
 
 function HeatCell({
   year,
   campus,
   classNumber,
+  unknownClass = false,
   count,
   titles,
 }: {
   year: number;
   campus: Campus;
-  classNumber: number;
+  classNumber?: number;
+  unknownClass?: boolean;
   count: number;
   titles: string[];
 }) {
   const level = levelFor(count);
+  const classLabel = unknownClass ? "班级不详" : `${classNumber}班`;
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <button
           className={`heat-cell ${level.className}`}
-          aria-label={`${campus}校区 ${year}届 ${classNumber}班，${count}位重要联络人`}
+          aria-label={`${campus}校区 ${year}届 ${classLabel}，${count}位重要联络人`}
         >
           {count > 0 ? count : null}
         </button>
       </TooltipTrigger>
       <TooltipContent sideOffset={8} className="tooltip-card">
         <p className="tooltip-title">
-          {campus}校区 · {year}届 · {classNumber}班
+          {campus}校区 · {year}届 · {classLabel}
         </p>
         {titles.length ? (
           <ul className="tooltip-title-list">
@@ -189,10 +218,10 @@ export default function Home() {
   const cellData = (
     year: number,
     campus: Campus,
-    classNumber: number,
+    classKey: number | typeof UNKNOWN_CLASS_KEY,
   ): { count: number; titles: string[] } => {
     const value = snapshots[selectedQuarter]?.[String(year)]?.[campus]?.[
-      String(classNumber)
+      String(classKey)
     ];
 
     // Keep compatibility with the previous count-only FC response while the
@@ -222,6 +251,7 @@ export default function Home() {
         ["高新", row.gaoxin],
         ["林荫", row.linyin],
       ] as [Campus, number][]) {
+        contacts += cellData(row.year, campus, UNKNOWN_CLASS_KEY).count;
         for (let classNumber = 1; classNumber <= count; classNumber += 1) {
           const value = cellData(row.year, campus, classNumber).count;
           contacts += value;
@@ -329,15 +359,15 @@ export default function Home() {
               className="heatmap-grid"
               style={
                 {
-                  minWidth: `${maxClassCount * 66 + 170}px`,
-                  "--class-count": maxClassCount,
+                  minWidth: `${(maxClassCount + 1) * 66 + 170}px`,
+                  "--class-count": maxClassCount + 1,
                 } as React.CSSProperties
               }
             >
               <div className="campus-heading campus-heading-left">
                 <span>GAOXIN CAMPUS</span>
                 <strong>高新校区</strong>
-                <em>班级号由外向内递减</em>
+                <em>班级号由外向内递减 · 最内侧为班级不详</em>
               </div>
               <div className="year-heading">
                 <span>届别</span>
@@ -345,7 +375,7 @@ export default function Home() {
               <div className="campus-heading campus-heading-right">
                 <strong>林荫校区</strong>
                 <span>LINYIN CAMPUS</span>
-                <em>班级号由内向外递增</em>
+                <em>最内侧为班级不详 · 班级号由内向外递增</em>
               </div>
 
               {cohorts.length ? (
@@ -365,12 +395,24 @@ export default function Home() {
                           <span className="cell-spacer" key={classNumber} />
                         ),
                       )}
+                      <HeatCell
+                        year={row.year}
+                        campus="高新"
+                        unknownClass
+                        {...cellData(row.year, "高新", UNKNOWN_CLASS_KEY)}
+                      />
                     </div>
                     <div className="year-cell">
                       <span>{row.year}</span>
                       <small>届</small>
                     </div>
                     <div className="class-grid class-grid-right">
+                      <HeatCell
+                        year={row.year}
+                        campus="林荫"
+                        unknownClass
+                        {...cellData(row.year, "林荫", UNKNOWN_CLASS_KEY)}
+                      />
                       {rightSlots.map((classNumber) =>
                         classNumber <= row.linyin ? (
                           <HeatCell
@@ -403,9 +445,11 @@ export default function Home() {
                     {leftSlots.map((classNumber) => (
                       <span key={classNumber}>{classNumber}</span>
                     ))}
+                    <span className="unknown-axis" title="班级不详">?</span>
                   </div>
                   <div className="axis-title">班级</div>
                   <div className="class-grid class-grid-right class-axis">
+                    <span className="unknown-axis" title="班级不详">?</span>
                     {rightSlots.map((classNumber) => (
                       <span key={classNumber}>{classNumber}</span>
                     ))}
