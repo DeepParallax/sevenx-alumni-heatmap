@@ -118,7 +118,7 @@ function HeatCell({
   titles: string[];
 }) {
   const level = levelFor(count);
-  const classLabel = unknownClass ? "班级不详" : `${classNumber}班`;
+  const classLabel = unknownClass ? "unspecified" : `${classNumber}班`;
 
   return (
     <Tooltip>
@@ -367,7 +367,7 @@ export default function Home() {
               <div className="campus-heading campus-heading-left">
                 <span>GAOXIN CAMPUS</span>
                 <strong>高新校区</strong>
-                <em>班级号由外向内递减 · 最内侧为班级不详</em>
+                <em>班级号由外向内递减 · 最内侧为 unspecified</em>
               </div>
               <div className="year-heading">
                 <span>届别</span>
@@ -375,7 +375,7 @@ export default function Home() {
               <div className="campus-heading campus-heading-right">
                 <strong>林荫校区</strong>
                 <span>LINYIN CAMPUS</span>
-                <em>最内侧为班级不详 · 班级号由内向外递增</em>
+                <em>最内侧为 unspecified · 班级号由内向外递增</em>
               </div>
 
               {cohorts.length ? (
@@ -445,11 +445,11 @@ export default function Home() {
                     {leftSlots.map((classNumber) => (
                       <span key={classNumber}>{classNumber}</span>
                     ))}
-                    <span className="unknown-axis" title="班级不详">?</span>
+                    <span className="unknown-axis" title="unspecified">?</span>
                   </div>
                   <div className="axis-title">班级</div>
                   <div className="class-grid class-grid-right class-axis">
-                    <span className="unknown-axis" title="班级不详">?</span>
+                    <span className="unknown-axis" title="unspecified">?</span>
                     {rightSlots.map((classNumber) => (
                       <span key={classNumber}>{classNumber}</span>
                     ))}
