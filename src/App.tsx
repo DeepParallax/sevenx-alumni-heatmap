@@ -124,7 +124,7 @@ function HeatCell({
     <Tooltip>
       <TooltipTrigger asChild>
         <button
-          className={`heat-cell ${level.className}`}
+          className={`heat-cell ${unknownClass ? "unknown-cell" : ""} ${level.className}`}
           aria-label={`${campus}校区 ${year}届 ${classLabel}，${count}位重要联络人`}
         >
           {count > 0 ? count : null}
@@ -359,8 +359,8 @@ export default function Home() {
               className="heatmap-grid"
               style={
                 {
-                  minWidth: `${(maxClassCount + 1) * 66 + 170}px`,
-                  "--class-count": maxClassCount + 1,
+                  minWidth: `${(maxClassCount + 1) * 66 + 180}px`,
+                  "--class-count": maxClassCount,
                 } as React.CSSProperties
               }
             >
@@ -395,6 +395,7 @@ export default function Home() {
                           <span className="cell-spacer" key={classNumber} />
                         ),
                       )}
+                      <span className="unknown-separator" aria-hidden="true" />
                       <HeatCell
                         year={row.year}
                         campus="高新"
@@ -413,6 +414,7 @@ export default function Home() {
                         unknownClass
                         {...cellData(row.year, "林荫", UNKNOWN_CLASS_KEY)}
                       />
+                      <span className="unknown-separator" aria-hidden="true" />
                       {rightSlots.map((classNumber) =>
                         classNumber <= row.linyin ? (
                           <HeatCell
@@ -445,11 +447,13 @@ export default function Home() {
                     {leftSlots.map((classNumber) => (
                       <span key={classNumber}>{classNumber}</span>
                     ))}
+                    <span className="unknown-separator" aria-hidden="true" />
                     <span className="unknown-axis" title="unspecified">?</span>
                   </div>
                   <div className="axis-title">班级</div>
                   <div className="class-grid class-grid-right class-axis">
                     <span className="unknown-axis" title="unspecified">?</span>
+                    <span className="unknown-separator" aria-hidden="true" />
                     {rightSlots.map((classNumber) => (
                       <span key={classNumber}>{classNumber}</span>
                     ))}

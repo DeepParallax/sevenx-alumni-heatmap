@@ -59,9 +59,12 @@ button { font: inherit; }
 .campus-heading-left em { margin-left: 0; margin-right: auto; order: -1; }
 .year-heading { min-height: 44px; display: grid; place-items: center; border-bottom: 1px solid #cbd8d0; color: #8b9891; font-size: 10px; }
 .class-grid { display: grid; grid-template-columns: repeat(var(--class-count), 27px); gap: 5px; }
-.class-grid-left { padding-right: 16px; justify-content: end; }
-.class-grid-right { padding-left: 16px; justify-content: start; }
+.class-grid-left { grid-template-columns: repeat(var(--class-count), 27px) 0 27px; padding-right: 16px; justify-content: end; }
+.class-grid-right { grid-template-columns: 27px 0 repeat(var(--class-count), 27px); padding-left: 16px; justify-content: start; }
 .heat-cell { width: 27px; aspect-ratio: 1 / 1; border: 1px solid rgba(27,52,39,.06); border-radius: 6px; cursor: default; display: grid; place-items: center; color: rgba(24,49,36,.72); font-size: 9px; font-weight: 700; line-height: 1; transition: background-color .22s ease, transform .15s ease, box-shadow .15s ease; }
+.unknown-separator { width: 0; }
+.heat-cell.unknown-cell { border-style: dashed; border-color: rgba(72,102,87,.38); }
+.heat-cell.unknown-cell.level-0 { background: #f3f6f4; }
 .cell-spacer { width: 27px; aspect-ratio: 1 / 1; }
 .heat-cell:hover, .heat-cell:focus-visible { transform: translateY(-2px) scale(1.08); z-index: 2; box-shadow: 0 5px 12px rgba(33,58,45,.18); outline: 2px solid white; }
 .level-0 { background: var(--level-0); }.level-1 { background: var(--level-1); }.level-2 { background: var(--level-2); }.level-3 { background: var(--level-3); }.level-4 { background: var(--level-4); color: rgba(255,255,255,.92); }
