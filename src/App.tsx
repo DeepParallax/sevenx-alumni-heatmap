@@ -413,11 +413,7 @@ export default function Home() {
               <div key={level.label} className="legend-item">
                 <i className={level.className} />
                 <span>
-                  {level.max === Infinity
-                    ? "7+"
-                    : level.min === level.max
-                      ? "0"
-                      : `${level.min}–${level.max}`}
+                  {level.label}
                 </span>
               </div>
             ))}
