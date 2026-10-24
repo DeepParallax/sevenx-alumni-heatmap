@@ -57,17 +57,20 @@ type HeatmapResponse = {
 };
 
 const LEVELS = [
-  { min: 0, max: 0, label: "暂无覆盖", className: "level-0" },
-  { min: 1, max: 2, label: "初步覆盖", className: "level-1" },
-  { min: 3, max: 4, label: "中等覆盖", className: "level-2" },
-  { min: 5, max: 6, label: "较高覆盖", className: "level-3" },
-  { min: 7, max: Infinity, label: "高覆盖", className: "level-4" },
+  { min: 0, max: 0, label: "0", className: "level-0" },
+  { min: 1, max: 1, label: "1", className: "level-1" },
+  { min: 2, max: 2, label: "2", className: "level-2" },
+  { min: 3, max: 3, label: "3", className: "level-3" },
+  { min: 4, max: 4, label: "4", className: "level-4" },
+  { min: 5, max: 5, label: "5", className: "level-5" },
+  { min: 6, max: 6, label: "6", className: "level-6" },
+  { min: 7, max: Infinity, label: "7+", className: "level-7" },
 ] as const;
 
 function levelFor(count: number) {
   return (
     LEVELS.find((level) => count >= level.min && count <= level.max) ??
-    LEVELS[4]
+    LEVELS[7]
   );
 }
 
