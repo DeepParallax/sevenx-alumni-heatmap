@@ -5,7 +5,8 @@
 :root {
   --ink: #142755; --muted-ink: #315a9f; --line: #b8c9e6; --paper: #e8effb;
   --green: #315a9f; --green-dark: #142755; --level-0: #e8effb; --level-1: #b8c9e6;
-  --level-2: #f3b558; --level-3: #ed9210; --level-4: #192f60;
+  --level-2: #315a9f; --level-3: #142755; --level-4: #fbe2bd; --level-5: #f3b558;
+  --level-6: #ed9210; --level-7: #a95108;
   --background: var(--paper); --foreground: var(--ink); --primary: var(--green);
   --primary-foreground: #fff; --muted: #b8c9e6; --muted-foreground: var(--muted-ink);
   --border: var(--line); --ring: #315a9f; --radius: .55rem;
@@ -69,7 +70,7 @@ button { font: inherit; }
 .heat-cell.unknown-cell.level-0 { background: #e8effb; }
 .cell-spacer { width: 27px; aspect-ratio: 1 / 1; }
 .heat-cell:hover, .heat-cell:focus-visible { transform: translateY(-2px) scale(1.08); z-index: 2; box-shadow: 0 5px 12px rgba(20,39,85,.18); outline: 2px solid white; }
-.level-0 { background: var(--level-0); }.level-1 { background: var(--level-1); }.level-2 { background: var(--level-2); }.level-3 { background: var(--level-3); }.level-4 { background: var(--level-4); color: rgba(255,255,255,.92); }
+.level-0 { background: var(--level-0); }.level-1 { background: var(--level-1); }.level-2 { background: var(--level-2); color: rgba(255,255,255,.94); }.level-3 { background: var(--level-3); color: rgba(255,255,255,.96); }.level-4 { background: var(--level-4); }.level-5 { background: var(--level-5); }.level-6 { background: var(--level-6); color: rgba(20,39,85,.96); }.level-7 { background: var(--level-7); color: rgba(255,255,255,.96); }
 .year-cell { height: 26px; display: flex; justify-content: center; align-items: baseline; gap: 2px; border-left: 1px solid #b8c9e6; border-right: 1px solid #b8c9e6; color: #192f60; background: rgba(232,239,251,.72); }
 .year-cell span { font-family: Georgia, serif; font-size: 13px; }.year-cell small { font-size: 8px; color: #315a9f; }
 .class-axis { margin-top: 3px; padding-top: 8px; border-top: 1px solid #b8c9e6; }
