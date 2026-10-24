@@ -4,9 +4,9 @@
 
 :root {
   --ink: #142755; --muted-ink: #315a9f; --line: #b8c9e6; --paper: #e8effb;
-  --green: #315a9f; --green-dark: #142755; --level-0: #eceff4; --level-1: #d0d9e7;
-  --level-2: #b0c2dd; --level-3: #8eabd7; --level-4: #d4a568; --level-5: #d5943f;
-  --level-6: #ca8121; --level-7: #ae6b13;
+  --green: #315a9f; --green-dark: #142755; --level-0: #f9fafb; --level-1: #dde4ee;
+  --level-2: #bfcde3; --level-3: #9db6dd; --level-4: #d9af78; --level-5: #d89d4f;
+  --level-6: #db8c24; --level-7: #c17715;
   --background: var(--paper); --foreground: var(--ink); --primary: var(--green);
   --primary-foreground: #fff; --muted: #b8c9e6; --muted-foreground: var(--muted-ink);
   --border: var(--line); --ring: #315a9f; --radius: .55rem;
